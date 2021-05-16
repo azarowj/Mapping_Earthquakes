@@ -15,6 +15,13 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
     accessToken: API_KEY
 });
 
+// Create the map object with center, zoom level and default layer.
+let map = L.map('mapid', {
+    center: [39.5, -98.5],
+    zoom: 3,
+    layers: [streets]
+})
+
 // Create a base layer that holds both maps.
 let baseMaps = {
     "Streets": streets,
@@ -30,13 +37,6 @@ let overlays = {
     Earthquakes: earthquakes
   };
 
-// Create the map object with center, zoom level and default layer.
-let map = L.map('mapid', {
-    center: [39.5, -98.5],
-    zoom: 3,
-    layers: [streets]
-})
-  
 // Then we add a control to the map that will allow the user to change
 // which layers are visible.
 L.control.layers(baseMaps, overlays).addTo(map);
@@ -44,7 +44,7 @@ L.control.layers(baseMaps, overlays).addTo(map);
 let myStyle = {
     color: "#ffffa1",
     weight: 2
-}
+};
 
 // Retrieve the earthquake GeoJSON data.
 d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(function(data) {
@@ -63,7 +63,10 @@ pointToLayer: function(feature, latlng) {
         onEachFeature: function(feature,layer){
             layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
         }
-    }).addTo(map);
+    }).addTo(earthquakes);
+
+        //Then we add the earthquake layer to our map.
+        earthquakes.addTo(map);
 // This function returns the style data for each of the earthquakes we plot on
 // the map. We pass the magnitude of the earthquake into two separate functions
 // to calculate the color and radius.
